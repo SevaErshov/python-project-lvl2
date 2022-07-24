@@ -22,7 +22,7 @@ def stringify(value: dict, replacer=' ', spaces_count=1):
     return iter_(value, 0)
 
 
-def to_json_bool(value):
+def json_bool(value):
     if value is False:
         return 'false'
     elif value is True:
@@ -36,9 +36,9 @@ def compare(sign_read: dict, compare_read: dict, sign: str):
     view_difference = dict()
     for key in sign_read:
         if key in compare_read and sign_read[key] == compare_read[key]:
-            view_difference['  ' + str(key)] = to_json_bool(sign_read[key])
+            view_difference['  ' + str(key)] = json_bool(sign_read[key])
         else:
-            view_difference[sign + ' ' + str(key)] = to_json_bool(sign_read[key])
+            view_difference[sign + ' ' + str(key)] = json_bool(sign_read[key])
     return view_difference
 
 
