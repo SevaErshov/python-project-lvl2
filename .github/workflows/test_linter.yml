@@ -1,0 +1,9 @@
+name: Gendiff test and lint
+on: push
+jobs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: linter
+        run: make lint
+      - name: test
+        run: make test
