@@ -1,9 +1,7 @@
 #!usr/bit/env python3
 import argparse
-import json
-import itertools
-import yaml
 from gendiff.parsing import generate_diff
+
 
 def main():
     description = 'Compares two configuration files and shows a difference.'

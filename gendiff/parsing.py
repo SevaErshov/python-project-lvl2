@@ -51,8 +51,9 @@ def parse_file(file):
     if is_json(file):
         return json.load(open(file))
     else:
-        parse_file = yaml.safe_load(open(file)) 
+        parse_file = yaml.safe_load(open(file))
         return parse_file if parse_file is not None else {}
+
 
 def generate_diff(first_file, second_file):
     first_read = parse_file(first_file)
