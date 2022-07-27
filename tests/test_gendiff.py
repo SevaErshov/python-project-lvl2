@@ -1,4 +1,3 @@
-import json
 import gendiff as g
 
 
@@ -35,3 +34,26 @@ def test_empty_yml():
     second_file = 'tests/fixtures/empty.yml'
     with open('tests/fixtures/expected_with_empty.txt', 'r') as expected:
         assert g.generate_diff(first_file, second_file) == expected.read()
+
+
+def test_null_json():
+    first_file = 'tests/fixtures/file1.yml'
+    second_file = 'tests/fixtures/with_null.yml'
+    with open('tests/fixtures/expected_with_null.txt', 'r') as expected:
+        assert g.generate_diff(first_file, second_file) == expected.read()
+
+
+def test_nested_json():
+    first_file = 'tests/fixtures/nested_file1.json'
+    second_file = 'tests/fixtures/nested_file2.json'
+    with open('tests/fixtures/nested_expected.txt', 'r') as expected:
+        assert g.generate_diff(first_file, second_file) == expected.read()
+
+
+def test_nested_yml():
+    first_file = 'tests/fixtures/nested_file1.yml'
+    second_file = 'tests/fixtures/nested_file2.yml'
+    with open('tests/fixtures/nested_expected.txt', 'r') as expected:
+        assert g.generate_diff(first_file, second_file) == expected.read()
+    #функция для перевода превращает "" в None, а надо в ""
+

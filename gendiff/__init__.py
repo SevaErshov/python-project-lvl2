@@ -1,7 +1,7 @@
-from gendiff.parsing import generate_diff, stringify
+from gendiff.parsing import generate_diff, stylish
 
 
 __all__ = (
     'generate_diff',
-    'stringify'
+    'stylish'
 )
