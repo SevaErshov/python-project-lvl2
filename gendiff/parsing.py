@@ -34,22 +34,22 @@ def tree_bool(value):
     return value
 
 
-def compare(sign_read: dict, compare_read: dict, sign: str):
-    view_difference = dict()
+def compare(sign_read: dict, comp_read: dict, sign: str):
+    difference = dict()
     for key in sign_read:
         if not isinstance(sign_read[key], dict):
-            if key in compare_read and sign_read[key] == compare_read[key]:
-                view_difference['  ' + str(key)] = tree_bool(sign_read[key])
+            if key in comp_read and sign_read[key] == comp_read[key]:
+                difference['  ' + str(key)] = tree_bool(sign_read[key])
             else:
-                view_difference[sign + ' ' + str(key)] = tree_bool(sign_read[key])
+                difference[sign + ' ' + str(key)] = tree_bool(sign_read[key])
         else:
-            if key not in compare_read or not isinstance(compare_read[key], dict): 
-                compare_sign_value = compare(sign_read[key], sign_read[key], ' ')
-                view_difference[sign + ' ' + str(key)] = compare_sign_value
-            elif key in compare_read and isinstance(compare_read[key], dict):
-                compare_sign_value = compare(sign_read[key], compare_read[key], sign)
-                view_difference['  ' + str(key)] = compare_sign_value
-    return view_difference
+            if key not in comp_read or not isinstance(comp_read[key], dict):
+                compare_value = compare(sign_read[key], sign_read[key], ' ')
+                difference[sign + ' ' + str(key)] = compare_value
+            elif key in comp_read and isinstance(comp_read[key], dict):
+                compare_value = compare(sign_read[key], comp_read[key], sign)
+                difference['  ' + str(key)] = compare_value
+    return difference
 
 
 def is_json(file):
@@ -66,16 +66,16 @@ def parse_file(file):
         return parse_file if parse_file is not None else {}
 
 
-def recursive_update(first_dict, second_dict):
-    for key in second_dict:
-        if key not in first_dict:
-            first_dict[key] = second_dict[key]
-        elif key in first_dict:
-            if isinstance(first_dict[key], dict) and isinstance(second_dict[key], dict):
-                recursive_update(first_dict[key], second_dict[key])
-                first_dict[key] = sort_dict(first_dict[key])
+def recursive_update(first: dict, second: dict):
+    for key in second:
+        if key not in first:
+            first[key] = second[key]
+        elif key in first:
+            if isinstance(first[key], dict) and isinstance(second[key], dict):
+                recursive_update(first[key], second[key])
+                first[key] = sort_dict(first[key])
             else:
-                first_dict[key] = second_dict[key]
+                first[key] = second[key]
 
 
 def sort_dict(dictionary):
@@ -94,4 +94,3 @@ def generate_diff(first_file, second_file, format=stylish):
     first_diff.clear()
     difference = dict(sorted_tuple)
     return format(difference)
-
