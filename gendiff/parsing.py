@@ -8,16 +8,13 @@ def stylish(value: dict, replacer=' ', spaces_count=2):
     def iter_(current_value, depth):
         if not isinstance(current_value, dict):
             return str(current_value)
-        if depth == 0:
-            deep_indent_size = depth + spaces_count
-            current_indent = replacer * depth
-        else:
-            deep_indent_size = depth + spaces_count + 2
-            current_indent = replacer * (depth + 2)
+        deep_indent_size = depth + spaces_count
+        current_indent = replacer * depth
         deep_indent = replacer * deep_indent_size
         lines = []
         for key, val in current_value.items():
-            lines.append(f'{deep_indent}{key}: {iter_(val, deep_indent_size)}')
+            line = f'{deep_indent}{key}: {iter_(val, deep_indent_size + 2)}'
+            lines.append(line)
         result = itertools.chain("{", lines, [current_indent + "}"])
         return '\n'.join(result)
 
@@ -68,17 +65,14 @@ def parse_file(file):
 
 def recursive_update(first: dict, second: dict):
     for key in second:
-        if key not in first:
+        if isinstance(first.get(key), dict) and isinstance(second[key], dict):
+            recursive_update(first[key], second[key])
+            first[key] = sort_diff(first[key])
+        else:
             first[key] = second[key]
-        elif key in first:
-            if isinstance(first[key], dict) and isinstance(second[key], dict):
-                recursive_update(first[key], second[key])
-                first[key] = sort_dict(first[key])
-            else:
-                first[key] = second[key]
 
 
-def sort_dict(dictionary):
+def sort_diff(dictionary):
     sorted_tuple = sorted(dictionary.items(), key=lambda x: x[0][2:])
     return dict(sorted_tuple)
 
@@ -89,8 +83,5 @@ def generate_diff(first_file, second_file, format=stylish):
     first_diff = compare(first_read, second_read, '-')
     second_diff = compare(second_read, first_read, '+')
     recursive_update(first_diff, second_diff)
-    second_diff.clear()
-    sorted_tuple = sorted(first_diff.items(), key=lambda x: x[0][2:])
-    first_diff.clear()
-    difference = dict(sorted_tuple)
+    difference = sort_diff(first_diff)
     return format(difference)
