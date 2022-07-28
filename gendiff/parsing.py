@@ -31,24 +31,6 @@ def tree_bool(value):
     return value
 
 
-def compare(sign_read: dict, comp_read: dict, sign: str):
-    difference = dict()
-    for key in sign_read:
-        if not isinstance(sign_read[key], dict):
-            if key in comp_read and sign_read[key] == comp_read[key]:
-                difference['  ' + str(key)] = tree_bool(sign_read[key])
-            else:
-                difference[sign + ' ' + str(key)] = tree_bool(sign_read[key])
-        else:
-            if key not in comp_read or not isinstance(comp_read[key], dict):
-                compare_value = compare(sign_read[key], sign_read[key], ' ')
-                difference[sign + ' ' + str(key)] = compare_value
-            elif key in comp_read and isinstance(comp_read[key], dict):
-                compare_value = compare(sign_read[key], comp_read[key], sign)
-                difference['  ' + str(key)] = compare_value
-    return difference
-
-
 def is_json(file):
     if file[-5:] == '.json':
         return True
@@ -70,6 +52,31 @@ def recursive_update(first: dict, second: dict):
             first[key] = sort_diff(first[key])
         else:
             first[key] = second[key]
+
+
+def compare(sign_read: dict, comp_read: dict, sign: str):
+    difference = dict()
+
+    def compare_not_dict():
+        if key in comp_read and sign_read[key] == comp_read[key]:
+            difference['  ' + str(key)] = tree_bool(sign_read[key])
+        else:
+            difference[sign + ' ' + str(key)] = tree_bool(sign_read[key])
+
+    def compare_nested():
+        if key not in comp_read or not isinstance(comp_read[key], dict):
+            compare_value = compare(sign_read[key], sign_read[key], ' ')
+            difference[sign + ' ' + str(key)] = compare_value
+        elif isinstance(comp_read.get(key), dict):
+            compare_value = compare(sign_read[key], comp_read[key], sign)
+            difference['  ' + str(key)] = compare_value
+
+    for key in sign_read:
+        if not isinstance(sign_read[key], dict):
+            compare_not_dict()
+        else:
+            compare_nested()
+    return difference
 
 
 def sort_diff(dictionary):
