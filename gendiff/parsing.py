@@ -53,29 +53,35 @@ def recursive_update(first: dict, second: dict):
             first[key] = second[key]
 
 
-def compare(sign_read: dict, comp_read: dict, sign: str):
+def compare_two_keys(key, sign_read: dict, comp_read: dict, sign: str):
     difference = dict()
+    if key in comp_read and sign_read[key] == comp_read[key]:
+        difference['  ' + str(key)] = tree_bool(sign_read[key])
+    else:
+        difference[sign + ' ' + str(key)] = tree_bool(sign_read[key])
+    return difference
 
-    def compare_not_dict():
-        if key in comp_read and sign_read[key] == comp_read[key]:
-            difference['  ' + str(key)] = tree_bool(sign_read[key])
-        else:
-            difference[sign + ' ' + str(key)] = tree_bool(sign_read[key])
 
-    def compare_nested():
-        if key not in comp_read or not isinstance(comp_read[key], dict):
-            compare_value = compare(sign_read[key], sign_read[key], ' ')
-            difference[sign + ' ' + str(key)] = compare_value
-        elif isinstance(comp_read.get(key), dict):
-            compare_value = compare(sign_read[key], comp_read[key], sign)
-            difference['  ' + str(key)] = compare_value
+def compare_two_dict(key, sign_read: dict, comp_read: dict, sign: str):
+    difference = dict()
+    if key not in comp_read or not isinstance(comp_read[key], dict):
+        compare_value = compare(sign_read[key], sign_read[key], ' ')
+        difference[sign + ' ' + str(key)] = compare_value
+    elif isinstance(comp_read.get(key), dict):
+        compare_value = compare(sign_read[key], comp_read[key], sign)
+        difference['  ' + str(key)] = compare_value
+    return difference
+
+
+def compare(sign_read: dict, comp_read: dict, sign: str):
+    diff = dict()
 
     for key in sign_read:
         if not isinstance(sign_read[key], dict):
-            compare_not_dict()
+            diff.update(compare_two_keys(key, sign_read, comp_read, sign))
         else:
-            compare_nested()
-    return difference
+            diff.update(compare_two_dict(key, sign_read, comp_read, sign))
+    return diff
 
 
 def sort_diff(dictionary):
