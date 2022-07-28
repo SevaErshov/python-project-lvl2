@@ -49,7 +49,6 @@ def recursive_update(first: dict, second: dict):
     for key in second:
         if isinstance(first.get(key), dict) and isinstance(second[key], dict):
             recursive_update(first[key], second[key])
-            first[key] = sort_diff(first[key])
         else:
             first[key] = second[key]
 
@@ -80,6 +79,10 @@ def compare(sign_read: dict, comp_read: dict, sign: str):
 
 
 def sort_diff(dictionary):
+    for key in dictionary:
+        if isinstance(dictionary[key], dict):
+            dictionary[key] = sort_diff(dictionary[key])
+
     sorted_tuple = sorted(dictionary.items(), key=lambda x: x[0][2:])
     return dict(sorted_tuple)
 
