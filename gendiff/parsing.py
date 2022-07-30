@@ -66,15 +66,6 @@ def compare(sign_read: dict, comp_read: dict, sign: str):
     return diff
 
 
-def sort_diff(dictionary):
-    for key in dictionary:
-        if isinstance(dictionary[key], dict):
-            dictionary[key] = sort_diff(dictionary[key])
-
-    sorted_tuple = sorted(dictionary.items(), key=lambda x: x[0][2:])
-    return dict(sorted_tuple)
-
-
 def generate_diff(first_file, second_file, format=stylish):
     first_read = parse_file(first_file)
     second_read = parse_file(second_file)
