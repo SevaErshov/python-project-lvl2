@@ -1,5 +1,6 @@
 import gendiff as g
 from gendiff.formatter.plain import compose_diff
+from gendiff.formatter.json import into_bool
 import pytest
 
 
@@ -76,13 +77,13 @@ def test_yaml_plain_format():
 @pytest.fixture
 def decompose():
     return {
-        "+ cookie": 'milk',
+        "+ cookie": 'null',
         "- cookie": 'drink',
         "+ honey": 'bee',
         "  nested":{
             '- cool': 'wow',
             '+ cool': 'not wow',
-            '  good': 'very'
+            '  good': 'true'
         }
     }
 
@@ -94,7 +95,7 @@ def expected_compose():
         "+ honey": 'bee',
         "  nested": {
             '-+cool': 'wow',
-            '  good': 'very'
+            '  good': 'true'
         }
     }
 
@@ -102,9 +103,31 @@ def test_compose_diff(decompose, expected_compose):
     value = decompose
     expected = expected_compose
     updated_expected = {
-        "-+cookie": 'milk',
+        "-+cookie": 'null',
         '-+cool': 'not wow'
     }
     updated = compose_diff(value)
     assert updated == updated_expected
     assert value == expected
+
+
+def test_into_bool(decompose):
+    value = decompose
+    into_bool(value)
+    assert value == {
+        "+ cookie": None,
+        "- cookie": 'drink',
+        "+ honey": 'bee',
+        "  nested":{
+            '- cool': 'wow',
+            '+ cool': 'not wow',
+            '  good': True
+        }
+    }
+
+
+def test_json():
+    first_file = 'tests/fixtures/nested_file1.json'
+    second_file = 'tests/fixtures/nested_file2.json'
+    with open('tests/fixtures/json_format_expected.txt', 'r') as expected:
+        assert g.generate_diff(first_file, second_file, g.json) == expected.read()

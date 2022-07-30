@@ -2,6 +2,7 @@
 import argparse
 from gendiff.parsing import generate_diff, stylish
 from gendiff.formatter.plain import plain
+from gendiff.formatter.json import json
 
 
 def main():
@@ -16,6 +17,8 @@ def main():
         diff = generate_diff(args.first_file, args.second_file, plain)
     elif args.format == 'stylish':
         diff = generate_diff(args.first_file, args.second_file, stylish)
+    elif args.format == 'json':
+        diff = generate_diff(args.first_file, args.second_file, json)
     else:
         diff = generate_diff(args.first_file, args.second_file, args.format)
     print(diff)
