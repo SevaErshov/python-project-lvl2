@@ -13,6 +13,9 @@ package-install: #устанвока пакета в пользовательс�
 lint: #проверяет линтером 
 	poetry run flake8 gendiff
 
+lint-test: #проверяет линтером 
+	poetry run flake8 tests
+
 test:
 	poetry run pytest -vv
 

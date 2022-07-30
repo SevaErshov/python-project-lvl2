@@ -9,7 +9,7 @@ def test_plain_json():
     second_file = 'tests/fixtures/file2.json'
     with open('tests/fixtures/expected.txt', 'r') as expected:
         assert g.generate_diff(first_file, second_file) == expected.read()
-    
+
 
 def test_empty_json():
     first_file = 'tests/fixtures/file1.json'
@@ -39,7 +39,7 @@ def test_empty_yml():
         assert g.generate_diff(first_file, second_file) == expected.read()
 
 
-def test_null_json():
+def test_null_yml():
     first_file = 'tests/fixtures/file1.yml'
     second_file = 'tests/fixtures/with_null.yml'
     with open('tests/fixtures/expected_with_null.txt', 'r') as expected:
@@ -63,15 +63,15 @@ def test_nested_yml():
 def test_json_plain_format():
     first_file = 'tests/fixtures/nested_file1.json'
     second_file = 'tests/fixtures/nested_file2.json'
-    with open('tests/fixtures/plain_format_expected.txt', 'r') as expected:
-        assert g.generate_diff(first_file, second_file, g.plain) == expected.read()
+    with open('tests/fixtures/plain_format_expected.txt', 'r') as e:
+        assert g.generate_diff(first_file, second_file, g.plain) == e.read()
 
 
 def test_yaml_plain_format():
     first_file = 'tests/fixtures/nested_file1.yml'
     second_file = 'tests/fixtures/nested_file2.yml'
-    with open('tests/fixtures/plain_format_expected.txt', 'r') as expected:
-        assert g.generate_diff(first_file, second_file, g.plain) == expected.read()
+    with open('tests/fixtures/plain_format_expected.txt', 'r') as e:
+        assert g.generate_diff(first_file, second_file, g.plain) == e.read()
 
 
 @pytest.fixture
@@ -80,7 +80,7 @@ def decompose():
         "+ cookie": 'null',
         "- cookie": 'drink',
         "+ honey": 'bee',
-        "  nested":{
+        "  nested": {
             '- cool': 'wow',
             '+ cool': 'not wow',
             '  good': 'true'
@@ -98,6 +98,7 @@ def expected_compose():
             '  good': 'true'
         }
     }
+
 
 def test_compose_diff(decompose, expected_compose):
     value = decompose
@@ -118,7 +119,7 @@ def test_into_bool(decompose):
         "+ cookie": None,
         "- cookie": 'drink',
         "+ honey": 'bee',
-        "  nested":{
+        "  nested": {
             '- cool': 'wow',
             '+ cool': 'not wow',
             '  good': True
@@ -129,5 +130,5 @@ def test_into_bool(decompose):
 def test_json():
     first_file = 'tests/fixtures/nested_file1.json'
     second_file = 'tests/fixtures/nested_file2.json'
-    with open('tests/fixtures/json_format_expected.txt', 'r') as expected:
-        assert g.generate_diff(first_file, second_file, g.json) == expected.read()
+    with open('tests/fixtures/json_format_expected.txt', 'r') as e:
+        assert g.generate_diff(first_file, second_file, g.json) == e.read()
