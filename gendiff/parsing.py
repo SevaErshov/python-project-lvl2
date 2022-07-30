@@ -1,6 +1,8 @@
 import json
 import yaml
 from gendiff.formatter.stylish import stylish
+from gendiff.formatter.plain import plain
+from gendiff.formatter.json import json as json_format
 
 
 def tree_bool(value):
@@ -66,10 +68,16 @@ def compare(sign_read: dict, comp_read: dict, sign: str):
     return diff
 
 
-def generate_diff(first_file, second_file, format=stylish):
+def generate_diff(first_file, second_file, format='stylish'):
     first_read = parse_file(first_file)
     second_read = parse_file(second_file)
     first_diff = compare(first_read, second_read, '-')
     second_diff = compare(second_read, first_read, '+')
     recursive_update(first_diff, second_diff)
+    if format == 'plain':
+        return plain(first_diff)
+    elif format == 'stylish':
+        return stylish(first_diff)
+    elif format == 'json':
+        return json_format(first_diff)
     return format(first_diff)
