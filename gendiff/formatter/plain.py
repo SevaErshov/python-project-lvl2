@@ -2,9 +2,7 @@ from gendiff.formatter.stylish import sort_diff
 
 
 def into_line(sign, property, add=None, update=None):
-    signs = {
-            '- ': f'Property \'{property}\' was removed',
-        }
+    signs = {'- ': f'Property \'{property}\' was removed'}
     if isinstance(add, dict):
         signs['+ '] = f'''Property \'{property}\' was added \
 with value: [complex value]'''
