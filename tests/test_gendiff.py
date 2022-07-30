@@ -1,4 +1,6 @@
 import gendiff as g
+from gendiff.formatter.plain import compose_diff
+import pytest
 
 
 def test_plain_json():
@@ -55,5 +57,54 @@ def test_nested_yml():
     second_file = 'tests/fixtures/nested_file2.yml'
     with open('tests/fixtures/nested_expected.txt', 'r') as expected:
         assert g.generate_diff(first_file, second_file) == expected.read()
-    #функция для перевода превращает "" в None, а надо в ""
 
+
+def test_json_plain_format():
+    first_file = 'tests/fixtures/nested_file1.json'
+    second_file = 'tests/fixtures/nested_file2.json'
+    with open('tests/fixtures/plain_format_expected.txt', 'r') as expected:
+        assert g.generate_diff(first_file, second_file, g.plain) == expected.read()
+
+
+def test_yaml_plain_format():
+    first_file = 'tests/fixtures/nested_file1.yml'
+    second_file = 'tests/fixtures/nested_file2.yml'
+    with open('tests/fixtures/plain_format_expected.txt', 'r') as expected:
+        assert g.generate_diff(first_file, second_file, g.plain) == expected.read()
+
+
+@pytest.fixture
+def decompose():
+    return {
+        "+ cookie": 'milk',
+        "- cookie": 'drink',
+        "+ honey": 'bee',
+        "  nested":{
+            '- cool': 'wow',
+            '+ cool': 'not wow',
+            '  good': 'very'
+        }
+    }
+
+
+@pytest.fixture
+def expected_compose():
+    return {
+        "-+cookie": 'drink',
+        "+ honey": 'bee',
+        "  nested": {
+            '-+cool': 'wow',
+            '  good': 'very'
+        }
+    }
+
+def test_compose_diff(decompose, expected_compose):
+    value = decompose
+    expected = expected_compose
+    updated_expected = {
+        "-+cookie": 'milk',
+        '-+cool': 'not wow'
+    }
+    updated = compose_diff(value)
+    assert updated == updated_expected
+    assert value == expected

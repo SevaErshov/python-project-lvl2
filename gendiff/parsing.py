@@ -1,24 +1,6 @@
 import json
-import itertools
 import yaml
-
-
-def stylish(value: dict, replacer=' ', spaces_count=2):
-
-    def iter_(current_value, depth):
-        if not isinstance(current_value, dict):
-            return str(current_value)
-        deep_indent_size = depth + spaces_count
-        current_indent = replacer * depth
-        deep_indent = replacer * deep_indent_size
-        lines = []
-        for key, val in current_value.items():
-            line = f'{deep_indent}{key}: {iter_(val, deep_indent_size + 2)}'
-            lines.append(line)
-        result = itertools.chain("{", lines, [current_indent + "}"])
-        return '\n'.join(result)
-
-    return iter_(value, 0)
+from gendiff.formatter.stylish import stylish
 
 
 def tree_bool(value):
@@ -99,5 +81,4 @@ def generate_diff(first_file, second_file, format=stylish):
     first_diff = compare(first_read, second_read, '-')
     second_diff = compare(second_read, first_read, '+')
     recursive_update(first_diff, second_diff)
-    difference = sort_diff(first_diff)
-    return format(difference)
+    return format(first_diff)
