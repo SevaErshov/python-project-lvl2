@@ -26,6 +26,8 @@ From {de_bool(add)} to {de_bool(update)}'''
 def de_bool(value):
     if value == 'false' or value == 'true' or value == 'null':
         return value
+    elif not isinstance(value, str):
+        return value
     return '\'' + str(value) + '\''
 
 
